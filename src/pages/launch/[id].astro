@@ -1,0 +1,35 @@
+---
+import { getLaunchBy, getLastestLaunches, getOldestLaunches } from "../../services/spacex";
+import Layout from "../../layouts/Layout.astro";
+
+const { id } = Astro.params;
+
+let launch;
+if (id) {
+  launch = await getLaunchBy({ id });
+}
+
+export async function getStaticPaths() { 
+  const LastrestLaunches = await getLastestLaunches();
+  const OldestLaunch = await getOldestLaunches();
+  const launches = [...LastrestLaunches, ...OldestLaunch];
+  return launches.map((launch) => ({ 
+    params: { id: launch.id },
+ }));
+}
+
+const img = launch?.links?.patch?.small;
+const finalImg = img === null ? 'https://images2.imgbox.com/a9/9a/NXVkTZCE_o.png' : img;
+const finalDetails = launch.details === null ? 'No details available' : launch.details;
+
+---
+
+<Layout title=`Launch ${id}`>
+  <article class="flex gap-y-4 flex-col">
+    <img class="w-52 h-auto" src={finalImg} alt={launch.name} />
+    <h2 class="text-4xl text-white font-bold">{launch.name} Launch #{launch.flight_number}</h2>
+    <p class="text-lg">{finalDetails}</p>
+
+
+  </article>
+</Layout>
