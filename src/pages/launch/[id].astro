@@ -1,12 +1,14 @@
 ---
 import { getLaunchBy, getLastestLaunches, getOldestLaunches } from "../../services/spacex";
 import Layout from "../../layouts/Layout.astro";
+import HeaderButton from "../../components/HeaderButton.astro";
 
 const { id } = Astro.params;
 
 let launch;
 if (id) {
   launch = await getLaunchBy({ id });
+  console.log(launch);
 }
 
 export async function getStaticPaths() { 
@@ -21,14 +23,27 @@ export async function getStaticPaths() {
 const img = launch?.links?.patch?.small;
 const finalImg = img === null ? 'https://images2.imgbox.com/a9/9a/NXVkTZCE_o.png' : img;
 const finalDetails = launch.details === null ? 'No details available' : launch.details;
+let video = launch?.links?.webcast;
+let wiki = launch?.links?.wikipedia;
+let article = launch?.links?.article;
+let date = new Date(launch?.date_utc);
 
 ---
 
-<Layout title=`Launch ${id}`>
-  <article class="flex gap-y-4 flex-col">
+<Layout title={"SpaceX Launch " + launch.name}>
+  <article class="flex gap-y-4 flex-col justify-center items-center w-full">
     <img class="w-52 h-auto" src={finalImg} alt={launch.name} />
     <h2 class="text-4xl text-white font-bold">{launch.name} Launch #{launch.flight_number}</h2>
+    <p class="text-lg">{date}</p>
     <p class="text-lg">{finalDetails}</p>
+    <div class="flex">
+        {video === null ? '' : <HeaderButton class="text-lg text-blue-500" Link={video}>Video</HeaderButton>}
+        {wiki === null ? '' : <HeaderButton class="text-lg text-blue-500" Link={wiki}>Wiki</HeaderButton>}
+        { article === null ? '' : <HeaderButton class="text-lg text-blue-500" Link={article}>Article</HeaderButton>}
+    </div>
+
+
+    
 
 
   </article>
