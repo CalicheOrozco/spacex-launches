@@ -7,10 +7,11 @@ interface Props {
   details: string | null;
 }
 
-const { success, flightNumber, img, id, details } = Astro.props;
+const { success, flightNumber, img, id, details, date } = Astro.props;
 const successText = success ? "Success" : "Failure";
 const finalImg = img === null ? 'https://images2.imgbox.com/a9/9a/NXVkTZCE_o.png' : img;
 const finalDetails = details === null ? 'No details available' : details;
+let dateFormarted = new Date(date);
 ---
 
 <a
@@ -37,6 +38,9 @@ const finalDetails = details === null ? 'No details available' : details;
     <h2 class="my-2 text-2xl font-bold tracking-tight text-white">
       Flight #{flightNumber}
     </h2>
+    <h3 class="mb-2 text-md font-semibold tracking-tight text-gray-300">
+      {dateFormarted}
+    </h3>
 
     <p class="mb-4 font-light text-gray-400">
       {
